@@ -367,10 +367,12 @@ async function loadRanking() {
     
     try {
         // Supabase設定が正しくない場合はローカルストレージから読み込み
-        if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+        if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || typeof supabase === 'undefined') {
             loadRankingFromLocalStorage();
             return;
         }
+        
+        console.log('Supabaseからランキングを読み込み中...');
         
         const { data, error } = await supabase
             .from('quiz_scores')
@@ -379,13 +381,17 @@ async function loadRanking() {
             .order('completion_time', { ascending: true })
             .limit(20);
         
-        if (error) throw error;
+        if (error) {
+            console.error('Supabaseエラー:', error);
+            throw error;
+        }
         
+        console.log('取得したデータ:', data);
         displayRanking(data);
         
     } catch (error) {
         console.error('ランキング読み込みエラー:', error);
-        loadRankingFromLocalStorage();
+        rankingList.innerHTML = '<div class="loading">ランキングの読み込みに失敗しました。再度お試しください。</div>';
     }
 }
 
