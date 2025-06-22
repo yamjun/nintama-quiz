@@ -37,3 +37,19 @@ try {
 //
 // CREATE INDEX idx_quiz_scores_score ON quiz_scores(score DESC);
 // CREATE INDEX idx_quiz_scores_created_at ON quiz_scores(created_at DESC);
+//
+// 重要: Row Level Security (RLS) ポリシーの設定
+// ランキングが表示されない場合は、以下のRLSポリシーを設定してください：
+//
+// 1. quiz_scoresテーブルで公開読み取りを許可:
+// CREATE POLICY "公開読み取り許可" ON quiz_scores
+// FOR SELECT USING (true);
+//
+// 2. 認証済みユーザーに挿入を許可:
+// CREATE POLICY "認証済み挿入許可" ON quiz_scores
+// FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
+//
+// 3. RLSを有効化:
+// ALTER TABLE quiz_scores ENABLE ROW LEVEL SECURITY;
+//
+// これらの設定により、ランキングの表示とスコアの保存が正常に動作します。

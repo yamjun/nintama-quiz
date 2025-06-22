@@ -382,16 +382,35 @@ async function loadRanking() {
             .limit(20);
         
         if (error) {
-            console.error('Supabaseエラー:', error);
+            console.error('Supabaseエラー詳細:', error);
+            console.error('エラーコード:', error.code);
+            console.error('エラーメッセージ:', error.message);
+            
+            // RLSポリシーエラーの場合は具体的なメッセージを表示
+            if (error.code === 'PGRST116' || error.message?.includes('row-level security')) {
+                rankingList.innerHTML = '<div class="loading">ランキングデータにアクセスできません。<br>Supabaseのアクセス権限設定を確認してください。<br><small>コンソールで詳細を確認できます。</small></div>';
+                console.error('RLSポリシーが設定されていない可能性があります。Supabaseダッシュボードでquiz_scoresテーブルのRLSポリシーを確認してください。');
+                return;
+            }
             throw error;
         }
         
         console.log('取得したデータ:', data);
+        
+        if (!data || data.length === 0) {
+            console.log('データは取得できましたが、スコアがありません');
+            rankingList.innerHTML = '<div class="loading">まだスコアがありません</div>';
+            return;
+        }
+        
         displayRanking(data);
         
     } catch (error) {
         console.error('ランキング読み込みエラー:', error);
-        rankingList.innerHTML = '<div class="loading">ランキングの読み込みに失敗しました。再度お試しください。</div>';
+        
+        // エラーが発生した場合はローカルストレージを使用
+        console.log('Supabaseでエラーが発生したため、ローカルストレージを使用します');
+        loadRankingFromLocalStorage();
     }
 }
 
