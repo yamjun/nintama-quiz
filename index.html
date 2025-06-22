@@ -11,24 +11,31 @@
     <div class="container">
         <header class="header">
             <h1>忍たま太郎クイズ</h1>
-            <div class="auth-section">
-                <div id="guest-section">
-                    <button id="login-btn" onclick="showLoginModal()">ログイン</button>
-                    <button id="register-btn" onclick="showRegisterModal()">新規登録</button>
-                </div>
-                <div id="user-section" style="display: none;">
-                    <span id="user-name">ユーザー名</span>
-                    <button id="logout-btn" onclick="logout()">ログアウト</button>
+            <div class="hamburger-menu">
+                <button class="hamburger-btn" onclick="toggleHamburgerMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div id="hamburger-dropdown" class="hamburger-dropdown">
+                    <div id="guest-menu" class="menu-section">
+                        <button id="login-btn" onclick="showLoginModal()">ログイン</button>
+                        <button id="register-btn" onclick="showRegisterModal()">新規登録</button>
+                    </div>
+                    <div id="user-menu" class="menu-section" style="display: none;">
+                        <div class="user-info">
+                            <span id="user-name">ユーザー名</span>
+                        </div>
+                        <button id="logout-btn" onclick="logout()">ログアウト</button>
+                    </div>
+                    <div class="menu-separator"></div>
+                    <button id="ranking-btn" onclick="showRanking()">ランキング</button>
                 </div>
             </div>
         </header>
 
-        <nav class="nav-tabs">
-            <button class="tab-btn active" onclick="showTab('quiz')">クイズ</button>
-            <button class="tab-btn" onclick="showTab('ranking')">ランキング</button>
-        </nav>
 
-        <div id="quiz-tab" class="tab-content">
+        <div id="quiz-section">
             <div id="quiz-container">
                 <div id="question-section">
                     <h2 id="question"></h2>
@@ -54,8 +61,11 @@
             </div>
         </div>
 
-        <div id="ranking-tab" class="tab-content" style="display: none;">
-            <h2>ランキング</h2>
+        <div id="ranking-section" class="section" style="display: none;">
+            <div class="section-header">
+                <h2>ランキング</h2>
+                <button class="back-btn" onclick="showQuiz()">クイズに戻る</button>
+            </div>
             <div id="ranking-list">
                 <div class="loading">ランキングを読み込み中...</div>
             </div>
