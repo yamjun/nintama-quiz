@@ -46,26 +46,26 @@ async function initializeApp() {
     // フォームイベントリスナー設定
     setupFormListeners();
     
+    // ハンバーガーメニューの外側クリック時に閉じる
+    setupHamburgerMenuListeners();
+    
     // クイズ開始（エラーに関係なく必ず実行）
     startQuiz();
-    
-    // ランキング読み込み
-    loadRanking();
 }
 
 // 認証UI更新
 function updateAuthUI(user) {
-    const guestSection = document.getElementById('guest-section');
-    const userSection = document.getElementById('user-section');
+    const guestMenu = document.getElementById('guest-menu');
+    const userMenu = document.getElementById('user-menu');
     const userName = document.getElementById('user-name');
     
     if (user) {
-        guestSection.style.display = 'none';
-        userSection.style.display = 'block';
+        guestMenu.style.display = 'none';
+        userMenu.style.display = 'block';
         userName.textContent = user.email || 'ユーザー';
     } else {
-        guestSection.style.display = 'block';
-        userSection.style.display = 'none';
+        guestMenu.style.display = 'block';
+        userMenu.style.display = 'none';
     }
 }
 
@@ -73,6 +73,19 @@ function updateAuthUI(user) {
 function setupFormListeners() {
     document.getElementById('login-form').addEventListener('submit', handleLogin);
     document.getElementById('register-form').addEventListener('submit', handleRegister);
+}
+
+// ハンバーガーメニューリスナー設定
+function setupHamburgerMenuListeners() {
+    // 外側クリック時にメニューを閉じる
+    document.addEventListener('click', function(event) {
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const dropdown = document.getElementById('hamburger-dropdown');
+        
+        if (!hamburgerMenu.contains(event.target) && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    });
 }
 
 // ログイン処理
@@ -167,24 +180,38 @@ function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
-// タブ切り替え
-function showTab(tabName) {
-    // タブボタンの状態更新
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    // タブコンテンツの表示切り替え
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.style.display = 'none';
-    });
-    document.getElementById(tabName + '-tab').style.display = 'block';
-    
-    // ランキングタブの場合はデータを再読み込み
-    if (tabName === 'ranking') {
-        loadRanking();
-    }
+// ハンバーガーメニュー制御
+function toggleHamburgerMenu() {
+    const dropdown = document.getElementById('hamburger-dropdown');
+    dropdown.classList.toggle('show');
+}
+
+// セクション切り替え
+function showQuiz() {
+    document.getElementById('quiz-section').style.display = 'block';
+    document.getElementById('ranking-section').style.display = 'none';
+    // ハンバーガーメニューを閉じる
+    document.getElementById('hamburger-dropdown').classList.remove('show');
+}
+
+function showRanking() {
+    document.getElementById('quiz-section').style.display = 'none';
+    document.getElementById('ranking-section').style.display = 'block';
+    // ハンバーガーメニューを閉じる
+    document.getElementById('hamburger-dropdown').classList.remove('show');
+    // ランキングデータを読み込み
+    loadRanking();
+}
+
+// モーダル表示時にハンバーガーメニューを閉じる
+function showLoginModal() {
+    document.getElementById('login-modal').style.display = 'flex';
+    document.getElementById('hamburger-dropdown').classList.remove('show');
+}
+
+function showRegisterModal() {
+    document.getElementById('register-modal').style.display = 'flex';
+    document.getElementById('hamburger-dropdown').classList.remove('show');
 }
 
 // クイズ機能
