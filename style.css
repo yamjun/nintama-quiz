@@ -429,6 +429,61 @@ button:disabled {
     margin-top: 0.5rem;
 }
 
+/* OAuth Section */
+.oauth-section {
+    margin-bottom: 1.5rem;
+}
+
+.google-btn {
+    background: white;
+    color: #333;
+    border: 2px solid #ddd;
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-weight: 500;
+}
+
+.google-btn:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn:active {
+    transform: translateY(1px);
+}
+
+/* Divider */
+.divider {
+    text-align: center;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e9ecef;
+}
+
+.divider span {
+    background: white;
+    padding: 0 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header h1 {

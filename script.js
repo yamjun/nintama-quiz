@@ -62,7 +62,16 @@ function updateAuthUI(user) {
     if (user) {
         guestMenu.style.display = 'none';
         userMenu.style.display = 'block';
-        userName.textContent = user.email || 'ユーザー';
+        
+        // Google認証の場合はuser_metadataから名前を取得
+        let displayName = user.email || 'ユーザー';
+        if (user.user_metadata && user.user_metadata.full_name) {
+            displayName = user.user_metadata.full_name;
+        } else if (user.user_metadata && user.user_metadata.name) {
+            displayName = user.user_metadata.name;
+        }
+        
+        userName.textContent = displayName;
     } else {
         guestMenu.style.display = 'block';
         userMenu.style.display = 'none';
@@ -71,8 +80,7 @@ function updateAuthUI(user) {
 
 // フォームイベントリスナー設定
 function setupFormListeners() {
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-    document.getElementById('register-form').addEventListener('submit', handleRegister);
+    // メール認証機能は削除済み
 }
 
 // ハンバーガーメニューリスナー設定
@@ -88,41 +96,9 @@ function setupHamburgerMenuListeners() {
     });
 }
 
-// ログイン処理
-async function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    // Supabase未設定の場合はエラーメッセージを表示
-    if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || typeof supabase === 'undefined') {
-        alert('Supabaseが設定されていません。ゲストモードでお楽しみください。');
-        return;
-    }
-    
-    try {
-        const { error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-        
-        if (error) throw error;
-        
-        closeModal('login-modal');
-        alert('ログインしました！');
-        
-    } catch (error) {
-        alert('ログインエラー: ' + error.message);
-    }
-}
 
-// 新規登録処理
-async function handleRegister(e) {
-    e.preventDefault();
-    const name = document.getElementById('register-name').value;
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    
+// Google OAuth ログイン処理
+async function loginWithGoogle() {
     // Supabase未設定の場合はエラーメッセージを表示
     if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || typeof supabase === 'undefined') {
         alert('Supabaseが設定されていません。ゲストモードでお楽しみください。');
@@ -130,23 +106,22 @@ async function handleRegister(e) {
     }
     
     try {
-        const { error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
             options: {
-                data: {
-                    name: name
-                }
+                redirectTo: window.location.origin
             }
         });
         
         if (error) throw error;
         
-        closeModal('register-modal');
-        alert('登録完了！メールアドレスを確認してください。');
+        // OAuth認証は別ページにリダイレクトされるため、
+        // ここではモーダルを閉じる処理のみ実行
+        closeModal('login-modal');
         
     } catch (error) {
-        alert('登録エラー: ' + error.message);
+        console.error('Google認証エラー:', error);
+        alert('Google認証でエラーが発生しました: ' + error.message);
     }
 }
 
@@ -209,10 +184,6 @@ function showLoginModal() {
     document.getElementById('hamburger-dropdown').classList.remove('show');
 }
 
-function showRegisterModal() {
-    document.getElementById('register-modal').style.display = 'flex';
-    document.getElementById('hamburger-dropdown').classList.remove('show');
-}
 
 // クイズ機能
 function startQuiz() {
@@ -324,7 +295,16 @@ function showComplete() {
         scoreSaveSection.style.display = 'block';
         // ログインユーザーの場合はプレイヤー名を自動入力
         if (currentUser) {
-            document.getElementById('player-name').value = currentUser.email || 'ログインユーザー';
+            let defaultName = currentUser.email || 'ログインユーザー';
+            
+            // Google認証の場合は名前を優先
+            if (currentUser.user_metadata && currentUser.user_metadata.full_name) {
+                defaultName = currentUser.user_metadata.full_name;
+            } else if (currentUser.user_metadata && currentUser.user_metadata.name) {
+                defaultName = currentUser.user_metadata.name;
+            }
+            
+            document.getElementById('player-name').value = defaultName;
         }
     } else {
         scoreSaveSection.style.display = 'none';
