@@ -1,3 +1,6 @@
+# [技術紹介](https://yamjun.github.io/nintama-quiz/intro.html) 
+[https://yamjun.github.io/nintama-quiz/intro.html](https://yamjun.github.io/nintama-quiz/intro.html)
+
 # 忍たま太郎クイズ
 
 忍たま乱太郎に関するクイズアプリケーションです。懐かしいキャラクターや作品の知識を試すことができます。
