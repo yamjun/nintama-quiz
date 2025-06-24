@@ -106,10 +106,25 @@ async function loginWithGoogle() {
     }
     
     try {
+        // GitHub Pages環境に応じたリダイレクトURLを設定
+        let redirectUrl = window.location.origin;
+        
+        // GitHub Pagesの場合、リポジトリ名を含めたパスを設定
+        if (window.location.hostname === 'yamjun.github.io' || 
+            window.location.hostname.includes('github.io')) {
+            // リポジトリ名を取得（例：/nintama3/）
+            const pathSegments = window.location.pathname.split('/').filter(segment => segment);
+            if (pathSegments.length > 0) {
+                redirectUrl = `${window.location.origin}/${pathSegments[0]}/`;
+            }
+        }
+        
+        console.log('リダイレクトURL:', redirectUrl);
+        
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin
+                redirectTo: redirectUrl
             }
         });
         
