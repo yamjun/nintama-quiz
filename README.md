@@ -1,5 +1,6 @@
 # [技術紹介](https://yamjun.github.io/nintama-quiz/intro.html) 
-[https://yamjun.github.io/nintama-quiz/intro.html](https://yamjun.github.io/nintama-quiz/intro.html)
+![yamjun github io_nintama-quiz_intro html](https://github.com/user-attachments/assets/90f132fe-cca1-4fc5-9862-0007db8db5bc)
+
 
 # 忍たま太郎クイズ
 
